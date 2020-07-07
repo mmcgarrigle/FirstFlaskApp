@@ -2,6 +2,8 @@ from flask import Flask
 from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from forms import PostsForm
+
 app = Flask(__name__)
 
 
@@ -48,6 +50,12 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html', title='About')
+
+
+@app.route('/add')
+def add():
+    form = PostsForm()
+    return render_template('post.html', title='Add a post', form=form)
 
 
 @app.route('/create')
