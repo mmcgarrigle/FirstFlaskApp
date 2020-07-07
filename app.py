@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
@@ -51,11 +51,27 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+# GET - which displays data
+# POST - which sends data from website to application
+# DELETE - deletes some data
+# INSERT - sends data but more used for updating
 
-@app.route('/add')
+
+@app.route('/add', methods=['GET', 'POST'])
 def add():
     form = PostsForm()
-    return render_template('post.html', title='Add a post', form=form)
+    if form.validate_on_submit():
+        post_data = Posts(
+            f_name=form.f_name.data,
+            l_name=form.l_name.data,
+            title=form.title.data,
+            content=form.content.data,
+        )
+        db.session.add(post_data)
+        db.session.commit()
+        return redirect(url_for('home'))
+    else:
+        return render_template('post.html', title='Add a post', form=form)
 
 
 @app.route('/create')
